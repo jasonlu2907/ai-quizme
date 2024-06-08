@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String?
+  email String? @unique
+  emailVerified DateTime?
+  image String?
+  hashedPassword String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  favoriteIds String[] @db.ObjectId
+
+  // Relations
+  accounts Account[]
+  quizzes Quiz[]
+}
+
+model Account { // for user login
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  type String
+  provider String
+  providerAccountId String
+  refresh_token String? @db.String
+  access_token String? @db.String
+  expires_at Int?
+  token_type String?
+  scope String?
+  id_token String? @db.String
+  session_state String? 
+
+  @@unique([provider, providerAccountId]) // unique combination, diff than @unique
+  
+  //relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  description String?
+  imageSrc String?
+  createdAt DateTime @default(now())
+  category String?
+  questionCount Int
+  rightCount Int
+  wrongCount Int
+  userId String @db.ObjectId
+
+  //relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions Question[]
+}
+
+model Question {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  quizId String @db.ObjectId
+  questionText String
+  createdAt DateTime @default(now())
+  
+  //relations
+  answers Answer[]
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model Answer {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  questionId String @db.ObjectId
+  answerText String
+  isCorrect Boolean
+
+  //relations
+  question Question @relation(fields: [questionId], references: [id])
+}
