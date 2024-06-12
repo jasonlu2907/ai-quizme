@@ -30,8 +30,9 @@ const Button: React.FC<ButtonProps> = ({
         disabled:cursor-not-allowed
         rounded-lg
         hover:opacity-70
+        hover:-translate-y-[2px]
         transition
-        w-full
+        w-full md:w-1/3
         ${outline ? 'bg-white' : 'bg-green-600'}
         ${outline ? 'border-black' : 'border-green-600'}
         ${outline ? 'text-black' : 'text-white'}

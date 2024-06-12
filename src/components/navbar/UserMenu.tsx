@@ -33,7 +33,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
     <div className='relative'>
       <div className='flex flex-row items-center gap-3'>
         <div
-          onClick={() => {}} //TODO:
+          onClick={() => router.push('/new')}
           className='hidden md:block bg-emerald-600 text-yellow-100 text-sm text-center font-semibold  py-3 px-4 rounded-full hover:shadow-md hover:bg-neutral-100 hover:text-neutral-700 hover:font-bold hover:border-[1px] hover:border-neutral-400 transition cursor-pointer'
         >
           Create new quiz
