@@ -1,6 +1,6 @@
-import { Quiz, User } from '@prisma/client';
+import { Answer, Quiz, User } from '@prisma/client';
 
-export type SafeListing = Omit<Quiz, 'createdAt'> & {
+export type SafeQuiz = Omit<Quiz, 'createdAt'> & {
   createdAt: string;
 };
 
@@ -11,4 +11,8 @@ export type SafeUser = Omit<
   createdAt: string;
   updatedAt: string;
   emailVerified: string | null;
+};
+
+export type SafeAnswer = Omit<Answer, 'createdAt'> & {
+  createdAt: string;
 };
