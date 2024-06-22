@@ -84,5 +84,5 @@ model Answer {
   isCorrect Boolean
 
   //relations
-  question Question @relation(fields: [questionId], references: [id])
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }

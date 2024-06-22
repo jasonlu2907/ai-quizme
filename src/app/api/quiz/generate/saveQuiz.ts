@@ -1,12 +1,11 @@
 import prisma from '@/libs/prismadb';
 
-export interface DucCao {
-  quiz: Quiz;
-}
-export interface Quiz {
-  title: string;
-  description: string;
-  questions: Question[];
+export interface QuizOpenAI {
+  quiz: {
+    title: string;
+    description?: string;
+    questions: Question[];
+  };
 }
 export interface Question {
   questionText: string;
@@ -24,7 +23,7 @@ interface saveQuizProps {
   userId: string;
 }
 
-export default async function saveQuiz(quizData: saveQuizProps) {
+export async function saveQuiz(quizData: saveQuizProps) {
   const { title, description, questions, userId } = quizData;
 
   const newQuiz = await prisma.quiz.create({
@@ -50,4 +49,16 @@ export default async function saveQuiz(quizData: saveQuizProps) {
   });
 
   return newQuiz;
+}
+
+export async function deleteQuiz() {
+  const deleteQuestions = await prisma.question.deleteMany({
+    where: {
+      createdAt: {
+        gt: new Date('2024-06-22T13:48:49.179Z'),
+      },
+    },
+  });
+
+  return deleteQuestions;
 }

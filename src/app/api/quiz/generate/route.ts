@@ -6,7 +6,7 @@ import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { JsonOutputFunctionsParser } from 'langchain/output_parsers';
 
 import getCurrentUser from '@/app/actions/getCurrentUser';
-import saveQuiz, { DucCao, Quiz } from './saveQuiz';
+import { saveQuiz, QuizOpenAI, deleteQuiz } from './saveQuiz';
 
 export async function POST(req: NextRequest) {
   const currentUser = await getCurrentUser(); // cannot generate a quiz if not signed in
@@ -98,14 +98,14 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const result: DucCao = await runnable.invoke([message]);
+    const result = (await runnable.invoke([message])) as QuizOpenAI;
     console.log('Result NORMAL: ', result);
     // console.log('Result in String: ', JSON.stringify(result, null, 2));
 
     const newQuiz = await saveQuiz({ ...result.quiz, userId: currentUser.id });
-
+    // const newQuiz = await deleteQuiz();
+    // return NextResponse.json({ msg: 'Success' }, { status: 200 });
     return NextResponse.json({ newQuiz }, { status: 200 });
-    // return NextResponse.json({ result }, { status: 200 });
   } catch (e: any) {
     console.log(e);
     return NextResponse.error();
