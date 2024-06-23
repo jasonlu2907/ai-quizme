@@ -40,6 +40,7 @@ const QuizSubmission: React.FC<QuizSubmissionProps> = ({
         <header className='flex flex-row items-center justify-around py-2 gap-2'>
           <Button
             label='Review your previous attemp.'
+            review
             onClick={onHandleBack} //TODO: Implement the review functionality
             outline={true}
           />

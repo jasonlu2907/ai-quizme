@@ -5,60 +5,22 @@ import { useMemo, useState } from 'react';
 import { AnswerBox } from '@/components/quiz/AnswerBox';
 import ProgressBar from '@/components/quiz/ProgressBar';
 import QuizSubmission from '@/components/quiz/QuizSubmission';
+import { SafeQuiz } from '@/types';
 
-const questions = [
-  {
-    questionText: 'What is React?',
-    answers: [
-      {
-        answerText: 'A library for building user interfaces',
-        isCorrect: true,
-        id: 1,
-      },
-      { answerText: 'A front-end framework', isCorrect: false, id: 2 },
-      { answerText: 'A back-end framework', isCorrect: false, id: 3 },
-      { answerText: 'A database', isCorrect: false, id: 4 },
-    ],
-  },
-  {
-    questionText: 'What is JSX?',
-    answers: [
-      { answerText: 'JavaScript XML', isCorrect: true, id: 1 },
-      { answerText: 'JavaScript', isCorrect: false, id: 2 },
-      { answerText: 'JavaScript and XML', isCorrect: false, id: 3 },
-      { answerText: 'JavaScript and HTML', isCorrect: false, id: 4 },
-    ],
-  },
-  {
-    questionText: 'What is the virtual DOM?',
-    answers: [
-      {
-        answerText: 'A virtual representation of the DOM',
-        isCorrect: true,
-        id: 1,
-      },
-      { answerText: 'A real DOM', isCorrect: false, id: 2 },
-      {
-        answerText: 'A virtual representation of the browser',
-        isCorrect: false,
-        id: 3,
-      },
-      {
-        answerText: 'A virtual representation of the server',
-        isCorrect: false,
-        id: 4,
-      },
-    ],
-  },
-];
+interface QuizClientProps {
+  quiz: SafeQuiz;
+}
 
-export default function Home() {
+const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
   const [started, setStarted] = useState<boolean>(false);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null)); // array of answers
+  const [answers, setAnswers] = useState(
+    Array(quiz.questions.length).fill(null)
+  ); // array of answers
+
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  // const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   // reset the states
@@ -66,7 +28,7 @@ export default function Home() {
     setStarted(false);
     setCurrentQuestion(0);
     setScore(0);
-    setAnswers(Array(questions.length).fill(null));
+    setAnswers(Array(quiz.questions.length).fill(null));
     setSelectedAnswer(null);
     setSubmitted(false);
   };
@@ -84,7 +46,7 @@ export default function Home() {
       return;
     }
 
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < quiz.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setSubmitted(true);
@@ -94,6 +56,10 @@ export default function Home() {
     setSelectedAnswer(null);
     // setIsCorrect(null);
   };
+
+  const scorePercentage = useMemo(() => {
+    return Math.round((score / quiz.questions.length) * 100);
+  }, [quiz.questions.length, score]);
 
   const handleAnswer = (answer: any) => {
     if (answers[currentQuestion] !== null) return; // prevent re-answer the question
@@ -110,16 +76,12 @@ export default function Home() {
     // setIsCorrect(isCurrentCorrect);
   };
 
-  const scorePercentage = useMemo(() => {
-    return Math.round((score / questions.length) * 100);
-  }, [score]);
-
   if (submitted) {
     return (
       <QuizSubmission
         score={score}
         scorePercentage={scorePercentage}
-        totalQuestions={questions.length}
+        totalQuestions={quiz.questions.length}
       />
     );
   }
@@ -131,7 +93,9 @@ export default function Home() {
           <button onClick={handleBack} disabled={currentQuestion === 0}>
             Back
           </button>
-          <ProgressBar value={(currentQuestion / questions.length) * 100} />
+          <ProgressBar
+            value={(currentQuestion / quiz.questions.length) * 100}
+          />
           <button onClick={handleExit}>Exit</button>
         </div>
       )}
@@ -143,12 +107,12 @@ export default function Home() {
           <div>
             {/* QUESTION */}
             <h2 className='text-3xl font-bold'>
-              {questions[currentQuestion].questionText}
+              {quiz.questions[currentQuestion].questionText}
             </h2>
 
             {/* ANSWERS */}
             <div className='grid grid-cols-1 gap-6 mt-6'>
-              {questions[currentQuestion].answers.map((answer) => {
+              {quiz.questions[currentQuestion].answers.map((answer) => {
                 const variant =
                   answers[currentQuestion] === answer.id
                     ? answer.isCorrect
@@ -189,7 +153,7 @@ export default function Home() {
           >
             {!started
               ? 'Start'
-              : currentQuestion === questions.length - 1
+              : currentQuestion === quiz.questions.length - 1
               ? 'Submit'
               : 'Next'}
           </AnswerBox>
@@ -197,4 +161,6 @@ export default function Home() {
       </footer>
     </div>
   );
-}
+};
+
+export default QuizClient;

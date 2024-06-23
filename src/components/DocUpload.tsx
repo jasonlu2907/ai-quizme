@@ -31,6 +31,7 @@ const DocUpload = () => {
         const data = await res.json();
         console.log('Data: ', data);
 
+        //TODO: display those green objects to UI
         // const quizzId = data.quizzId;
         // router.push(`/quiz/${quizzId}`);
       }

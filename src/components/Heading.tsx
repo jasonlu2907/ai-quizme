@@ -11,8 +11,8 @@ interface HeadingProps {
 const Heading = (props: HeadingProps) => {
   return (
     <div className={props.center ? 'text-center' : 'text-start'}>
-      <div className='text-2xl font-bold'>{props.title}</div>
-      <div className='font-light text-neutral-500 mt-2'>{props.subtitle}</div>
+      <div className='text-3xl font-bold'>{props.title}</div>
+      <div className='font-normal text-neutral-600 mt-2'>{props.subtitle}</div>
     </div>
   );
 };

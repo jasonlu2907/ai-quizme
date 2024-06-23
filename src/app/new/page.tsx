@@ -13,7 +13,12 @@ const page = async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    return <EmptyState title='Unauthorized' subtitle='Please log in' />;
+    return (
+      <EmptyState
+        title='Unauthorized'
+        subtitle='Please sign in before continue.'
+      />
+    );
   }
 
   return (
