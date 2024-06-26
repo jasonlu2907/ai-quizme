@@ -33,7 +33,7 @@ const DocUpload = () => {
 
         //TODO: display those green objects to UI
         // const quizzId = data.quizzId;
-        // router.push(`/quiz/${quizzId}`);
+        // router.push(`/quizzes/${quizzId}`);
       }
     } catch (e) {
       console.log('error while generating the quiz', e);

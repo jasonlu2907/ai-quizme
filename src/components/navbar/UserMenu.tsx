@@ -55,7 +55,12 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
             {currentUser ? (
               <>
                 <MenuItem onClick={() => {}} label='My Profile' />
-                <MenuItem onClick={() => {}} label='My Quizzes' />
+                <MenuItem
+                  onClick={() => {
+                    router.push('/quizzes');
+                  }}
+                  label='My Quizzes'
+                />
                 <MenuItem
                   onClick={() => {
                     signOut();

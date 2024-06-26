@@ -22,15 +22,17 @@ const HotTopicsCard = async (props: Props) => {
 
   return (
     <Card className='col-span-4 hover:cursor-pointer hover:opacity-75'>
-      <CardHeader>
+      <CardHeader className='pb-2 space-y-0'>
         <CardTitle className='text-2xl font-bold'>Hot Topics</CardTitle>
-        <CardDescription>
-          Click on a topic to start a quiz on it.
-        </CardDescription>
       </CardHeader>
-      <CardContent className='pl-2'>
-        {/* <WordCloud formattedTopics='A TOPIC' /> */}
+      <CardContent>
+        <p className='text-md text-muted-foreground'>
+          Click on a topic to start a quiz on it.
+        </p>
       </CardContent>
+      {/* <CardContent className='pl-2'> */}
+      {/* <WordCloud formattedTopics='A TOPIC' /> */}
+      {/* </CardContent> */}
     </Card>
   );
 };

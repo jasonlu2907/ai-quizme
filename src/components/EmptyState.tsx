@@ -8,12 +8,14 @@ interface EmptyStateProps {
   title?: string;
   subtitle?: string;
   showReset?: boolean;
+  showCreateNew?: boolean;
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({
   title = 'No matches found',
   subtitle = 'Try searching for something else or modify your filter options',
   showReset,
+  showCreateNew,
 }) => {
   const router = useRouter();
 
@@ -26,6 +28,13 @@ const EmptyState: React.FC<EmptyStateProps> = ({
             outline
             label='Remove all filters'
             onClick={() => router.push('/')}
+          />
+        )}
+        {showCreateNew && (
+          <Button
+            outline
+            label='Create New Quiz'
+            onClick={() => router.push('/new')}
           />
         )}
       </div>

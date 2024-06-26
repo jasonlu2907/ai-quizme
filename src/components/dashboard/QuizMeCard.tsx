@@ -24,7 +24,7 @@ const QuizMeCard = (props: Props) => {
         <BrainCircuit size={28} strokeWidth={2.5} />
       </CardHeader>
       <CardContent>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-md text-muted-foreground'>
           Challenge yourself to a quiz with a topic of your choice.
         </p>
       </CardContent>
