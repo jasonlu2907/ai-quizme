@@ -1,5 +1,10 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-hot-toast';
+
+import { AiOutlineCloseSquare } from 'react-icons/ai';
+
 import EmptyState from '@/components/EmptyState';
 import {
   Card,
@@ -8,7 +13,6 @@ import {
   CardTitle,
 } from '@/components/card/card';
 import { SafeQuiz, SafeUser } from '@/types';
-import { useRouter } from 'next/navigation';
 
 interface QuizzesClientProps {
   currentUser?: SafeUser | null;
@@ -35,6 +39,24 @@ const QuizzesClient = ({ currentUser, quizzes }: QuizzesClientProps) => {
     return `${day}/${month}/${year}`;
   };
 
+  const handleDelete = async (quizId: string) => {
+    try {
+      const response = await fetch(`/api/quizzes/${quizId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+
+      const result = await response.json();
+      console.log('Deleted Quiz: ', result);
+
+      router.refresh();
+      toast.success('Successfully removed!');
+    } catch (error) {
+      console.log('Error while deleting quiz! ', error);
+    }
+  };
+
   return (
     <main className='p-8 mx-auto max-w-7xl'>
       <div className='flex items-center'>
@@ -46,15 +68,21 @@ const QuizzesClient = ({ currentUser, quizzes }: QuizzesClientProps) => {
 
       <div className='grid gap-4 mt-4 lg:grid-cols-2'>
         {quizzes.map((quiz) => (
-          <Card
-            className='hover:cursor-pointer hover:opacity-75'
-            onClick={() => {
-              router.push(`/quizzes/${quiz.id}`);
-            }}
-            key={quiz.id}
-          >
+          <Card className='hover:opacity-75' key={quiz.id}>
             <CardHeader className='flex flex-row items-center justify-between pb-2 space-y-0'>
-              <CardTitle className='text-2xl font-bold'>{quiz.title}</CardTitle>
+              <CardTitle
+                className='text-2xl font-bold hover:underline hover:cursor-pointer'
+                onClick={() => {
+                  router.push(`/quizzes/${quiz.id}`);
+                }}
+              >
+                {quiz.title}
+              </CardTitle>
+              <AiOutlineCloseSquare
+                size={28}
+                className='hover:-translate-y-0.5 hover:cursor-pointer transition'
+                onClick={() => handleDelete(quiz.id)}
+              />
             </CardHeader>
             <CardContent className='flex flex-row justify-between'>
               <div className=' text-sm text-muted-foreground'>

@@ -5,6 +5,7 @@ import './globals.css';
 import Navbar from '@/components/navbar/Navbar';
 import LoginModal from '@/components/modal/LoginModal';
 import RegisterModal from '@/components/modal/RegisterModal';
+import ToasterProvider from '@/providers/ToasterProvider';
 
 import getCurrentUser from './actions/getCurrentUser';
 
@@ -26,9 +27,11 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <body className={font.className}>
+        <ToasterProvider />
         <Navbar currentUser={currentUser} />
         <LoginModal />
         <RegisterModal />
+
         <div className=''>{children}</div>
       </body>
     </html>

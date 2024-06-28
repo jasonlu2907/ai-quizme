@@ -29,11 +29,10 @@ const DocUpload = () => {
 
       if (res.status === 200) {
         const data = await res.json();
-        console.log('Data: ', data);
+        // console.log('Data: ', data);
 
-        //TODO: display those green objects to UI
-        // const quizzId = data.quizzId;
-        // router.push(`/quizzes/${quizzId}`);
+        const quizId = data.id;
+        router.push(`/quizzes/${quizId}`);
       }
     } catch (e) {
       console.log('error while generating the quiz', e);
@@ -51,7 +50,8 @@ const DocUpload = () => {
   return (
     <div className='w-full md:w-1/2'>
       {isLoading ? (
-        <p>Loading...</p>
+        // <p>Loading...</p>
+        <div className='loader'></div>
       ) : (
         <form
           className='w-full flex flex-col gap-5 justify-center items-center'

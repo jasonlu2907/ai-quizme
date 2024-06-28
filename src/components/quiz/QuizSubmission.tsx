@@ -36,8 +36,8 @@ const QuizSubmission: React.FC<QuizSubmissionProps> = ({
 
   return (
     <div className='flex flex-col flex-1'>
-      <div className='position-sticky top-0 z-10 shadow-sm py-4 w-full'>
-        <header className='flex flex-row items-center justify-around py-2 gap-2'>
+      <div className='top-0 mx-auto shadow-sm py-4 w-1/2'>
+        <header className='flex flex-row items-center justify-between py-2 gap-10'>
           <Button
             label='Review your previous attemp.'
             review

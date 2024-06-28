@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
     const newQuiz = await saveQuiz({ ...result.quiz, userId: currentUser.id });
     // const newQuiz = await deleteQuiz();
     // return NextResponse.json({ msg: 'Success' }, { status: 200 });
-    return NextResponse.json({ newQuiz }, { status: 200 });
+    return NextResponse.json(newQuiz, { status: 200 });
   } catch (e: any) {
     console.log(e);
     return NextResponse.error();
