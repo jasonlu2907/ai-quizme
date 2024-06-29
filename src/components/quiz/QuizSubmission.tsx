@@ -14,12 +14,14 @@ interface QuizSubmissionProps {
   scorePercentage: number;
   score: number;
   totalQuestions: number;
+  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 const QuizSubmission: React.FC<QuizSubmissionProps> = ({
   score,
   scorePercentage,
   totalQuestions,
+  onClick,
 }) => {
   const { reward } = useReward('rewardId', 'confetti');
   const router = useRouter();
@@ -31,7 +33,7 @@ const QuizSubmission: React.FC<QuizSubmissionProps> = ({
   }, [scorePercentage, reward]);
 
   const onHandleBack = () => {
-    router.push('/new');
+    router.push('/quizzes');
   };
 
   return (
@@ -41,7 +43,7 @@ const QuizSubmission: React.FC<QuizSubmissionProps> = ({
           <Button
             label='Review your previous attemp.'
             review
-            onClick={onHandleBack} //TODO: Implement the review functionality
+            onClick={onClick}
             outline={true}
           />
 

@@ -51,7 +51,7 @@ const DocUpload = () => {
     <div className='w-full md:w-1/2'>
       {isLoading ? (
         // <p>Loading...</p>
-        <div className='loader'></div>
+        <div className='loader mx-auto'></div>
       ) : (
         <form
           className='w-full flex flex-col gap-5 justify-center items-center'

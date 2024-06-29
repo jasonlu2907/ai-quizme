@@ -7,6 +7,9 @@ import ProgressBar from '@/components/quiz/ProgressBar';
 import QuizSubmission from '@/components/quiz/QuizSubmission';
 import { SafeQuiz } from '@/types';
 
+import { MdOutlineKeyboardBackspace } from 'react-icons/md';
+import { RxExit } from 'react-icons/rx';
+import { cn } from '@/libs/utils';
 interface QuizClientProps {
   quiz: SafeQuiz;
 }
@@ -20,17 +23,19 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
   ); // array of answers
 
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [review, setReview] = useState<boolean>(false);
+  console.log(answers);
 
   // reset the states
-  const handleExit = () => {
+  const handleExit: any = () => {
     setStarted(false);
     setCurrentQuestion(0);
     setScore(0);
     setAnswers(Array(quiz.questions.length).fill(null));
     setSelectedAnswer(null);
     setSubmitted(false);
+    setReview(false);
   };
 
   const handleBack = () => {
@@ -49,12 +54,15 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
     if (currentQuestion < quiz.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
+      if (review) {
+        handleExit();
+        return;
+      }
       setSubmitted(true);
       return;
     }
 
     setSelectedAnswer(null);
-    // setIsCorrect(null);
   };
 
   const scorePercentage = useMemo(() => {
@@ -76,13 +84,22 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
     // setIsCorrect(isCurrentCorrect);
   };
 
-  if (submitted) {
+  const handleReview = () => {
+    setReview(true);
+    setCurrentQuestion(0);
+  };
+
+  if (submitted && !review) {
+    // make sure to have && !review
     return (
-      <QuizSubmission
-        score={score}
-        scorePercentage={scorePercentage}
-        totalQuestions={quiz.questions.length}
-      />
+      <div>
+        <QuizSubmission
+          score={score}
+          scorePercentage={scorePercentage}
+          totalQuestions={quiz.questions.length}
+          onClick={handleReview}
+        />
+      </div>
     );
   }
 
@@ -90,17 +107,27 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
     <div className='flex flex-col flex-1'>
       {started && (
         <div className='flex flex-row justify-center items-center gap-8 position-sticky top-0 z-10 shadow-md py-4 px-8 mb-5'>
-          <button onClick={handleBack} disabled={currentQuestion === 0}>
-            Back
-          </button>
+          <div className='hover:cursor-pointer' onClick={handleBack}>
+            <MdOutlineKeyboardBackspace size={28} />
+            <button disabled={currentQuestion === 0}>Back</button>
+          </div>
           <ProgressBar
             value={(currentQuestion / quiz.questions.length) * 100}
           />
-          <button onClick={handleExit}>Exit</button>
+          <div className='hover:cursor-pointer' onClick={handleExit}>
+            <RxExit size={28} />
+            <button>Exit</button>
+          </div>
         </div>
       )}
 
-      <main className='flex justify-center flex-1'>
+      {review && (
+        <div className='block max-w-max font-light px-3 py-2 ml-12 border-2 rounded-sm border-slate-600 italic'>
+          Reviewing...
+        </div>
+      )}
+
+      <main className='flex justify-center flex-1 mt-4'>
         {!started ? (
           <h1 className='text-3xl font-bold'>Let&apos;s get started</h1>
         ) : (
@@ -138,19 +165,33 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
                 }
               )}
             </div>
+
+            {/* IF WRONG ANSWER */}
+            {review && (
+              <div
+                className={cn(
+                  'border-green-500',
+                  'border-2',
+                  'rounded-lg',
+                  'p-4',
+                  'text-center',
+                  'text-lg',
+                  'font-semibold',
+                  'mt-14',
+                  'bg-secondary'
+                )}
+              >
+                The right answer is:{' '}
+                {quiz.questions[currentQuestion].answers.find(
+                  (answer) => answer.isCorrect
+                )?.answerText || ''}
+              </div>
+            )}
           </div>
         )}
       </main>
-      <footer className='footer mt-20 pb-9 px-6 relative mb-0'>
-        {/* <ResultCard
-          isCorrect={isCorrect}
-          correctAnswer={
-            questions[currentQuestion].answers.find(
-              (answer) => answer.isCorrect === true
-            )?.answerText || ''
-          }
-        /> */}
 
+      <footer className='footer mt-10 pb-9 px-6 relative mb-0'>
         <div className='mx-auto w-40'>
           <AnswerBox
             variant='neo'
@@ -161,7 +202,9 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
             {!started
               ? 'Start'
               : currentQuestion === quiz.questions.length - 1
-              ? 'Submit'
+              ? review
+                ? 'Close the review!'
+                : 'Submit'
               : 'Next'}
           </AnswerBox>
         </div>
