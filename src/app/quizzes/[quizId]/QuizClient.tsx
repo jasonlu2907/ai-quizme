@@ -84,7 +84,7 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
     // setIsCorrect(isCurrentCorrect);
   };
 
-  const handleReview = () => {
+  const handleReview = (): void => {
     setReview(true);
     setCurrentQuestion(0);
   };

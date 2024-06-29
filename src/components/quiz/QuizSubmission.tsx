@@ -14,7 +14,7 @@ interface QuizSubmissionProps {
   scorePercentage: number;
   score: number;
   totalQuestions: number;
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+  onClick: () => void;
 }
 
 const QuizSubmission: React.FC<QuizSubmissionProps> = ({
