@@ -16,17 +16,30 @@ datasource db {
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String?
-  email String? @unique
+  email String @unique
   emailVerified DateTime?
   image String?
   hashedPassword String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   favoriteIds String[] @db.ObjectId
+  active Boolean @default(false)
 
   // Relations
   accounts Account[]
   quizzes Quiz[]
+  activateTokens ActivateToken[]
+}
+
+model ActivateToken {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  token String @unique
+  createdAt   DateTime  @default(now())
+  activatedAt DateTime?
+
+  //relation
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)  
 }
 
 model Account { // for user login

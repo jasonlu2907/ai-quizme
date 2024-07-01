@@ -43,9 +43,10 @@ const RegisterModal = (props: Props) => {
       .then(() => {
         toast.success('Created a new account successfully!');
         registerModal.onClose();
-        loginModal.onOpen();
+        // loginModal.onOpen();
       })
       .catch((error) => {
+        console.log('Error in Register Modal: ', error);
         toast.error('Something is worng');
       })
       .finally(() => {

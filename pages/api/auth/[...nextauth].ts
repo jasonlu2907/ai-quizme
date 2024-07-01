@@ -30,7 +30,8 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         // 'credentials' are the user inputs
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Invalid Credentials');
+          throw new Error('CredentialsSignin');
+          // redirect('/error?error=CredentialsSignin');
         }
 
         const user = await prisma.user.findUnique({
@@ -40,7 +41,13 @@ export const authOptions: AuthOptions = {
         });
 
         if (!user || !user?.hashedPassword) {
-          throw new Error('Invalid Credentials');
+          // redirect('/error?error=CredentialsSignin');
+          throw new Error('CredentialsSignin');
+        }
+        // After Signing up, they can't still sign in directly until after verifying their account
+        if (!user.active) {
+          // redirect('/error?error=UserNotActive');
+          throw new Error('UserNotActive');
         }
 
         const isCorrectPassword = await bcrypt.compare(
@@ -49,7 +56,8 @@ export const authOptions: AuthOptions = {
         );
 
         if (!isCorrectPassword) {
-          throw new Error('Invalid Credentials');
+          // redirect('/error');
+          throw new Error('CredentialsSignin');
         }
 
         return user;
@@ -58,6 +66,7 @@ export const authOptions: AuthOptions = {
   ],
   pages: {
     signIn: '/',
+    error: '/error',
   },
   debug: process.env.NODE_ENV === 'development',
   session: {

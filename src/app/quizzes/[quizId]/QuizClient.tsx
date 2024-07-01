@@ -25,7 +25,6 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [review, setReview] = useState<boolean>(false);
-  console.log(answers);
 
   // reset the states
   const handleExit: any = () => {
@@ -107,10 +106,10 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
     <div className='flex flex-col flex-1'>
       {started && (
         <div className='flex flex-row justify-center items-center gap-8 position-sticky top-0 z-10 shadow-md py-4 px-8 mb-5'>
-          <div className='hover:cursor-pointer' onClick={handleBack}>
+          <button disabled={currentQuestion === 0} onClick={handleBack}>
             <MdOutlineKeyboardBackspace size={28} />
-            <button disabled={currentQuestion === 0}>Back</button>
-          </div>
+            Back
+          </button>
           <ProgressBar
             value={(currentQuestion / quiz.questions.length) * 100}
           />
@@ -129,7 +128,14 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
 
       <main className='flex justify-center flex-1 mt-4'>
         {!started ? (
-          <h1 className='text-3xl font-bold'>Let&apos;s get started</h1>
+          <div>
+            <h1 className='text-3xl font-bold'>Your quiz is ready</h1>
+            <h2 className='text-xl mt-2 font-serif'>
+              {' '}
+              <u>Title:</u> {quiz.title}
+            </h2>
+            <div className='text-lg font-serif'>{quiz.description}</div>
+          </div>
         ) : (
           <div>
             {/* QUESTION */}
