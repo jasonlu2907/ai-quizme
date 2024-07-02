@@ -4,6 +4,17 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// model ActivateToken {
+//   id String @id @default(auto()) @map("_id") @db.ObjectId
+//   token String @unique
+//   createdAt   DateTime  @default(now())
+//   activatedAt DateTime?
+
+//   //relation
+//   userId String @db.ObjectId
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)  
+// }
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,23 +34,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   favoriteIds String[] @db.ObjectId
-  active Boolean @default(false)
+  // active Boolean @default(false)
 
   // Relations
   accounts Account[]
   quizzes Quiz[]
-  activateTokens ActivateToken[]
-}
-
-model ActivateToken {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  token String @unique
-  createdAt   DateTime  @default(now())
-  activatedAt DateTime?
-
-  //relation
-  userId String @db.ObjectId
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)  
+    // activateTokens ActivateToken[]
 }
 
 model Account { // for user login
