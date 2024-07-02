@@ -10,40 +10,41 @@ const API_KEY = process.env.MAILGUN_API_KEY || '';
 const DOMAIN = process.env.MAILGUN_DOMAIN || '';
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { email, name, password } = body;
+  try {
+    const body = await request.json();
+    const { email, name, password } = body;
 
-  const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      name,
-      hashedPassword,
-    },
-  });
+    const user = await prisma.user.create({
+      data: {
+        email,
+        name,
+        hashedPassword,
+      },
+    });
 
-  if (!user) {
-    return { error: 'Something went wrong' };
-  }
+    if (!user) {
+      return NextResponse.error();
+    }
 
-  //generate a Verification Token
-  const token = await prisma.activateToken.create({
-    data: {
-      token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ''),
-      userId: user.id,
-    },
-  });
+    //generate a Verification Token
+    const token = await prisma.activateToken.create({
+      data: {
+        token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ''),
+        userId: user.id,
+      },
+    });
 
-  const mailgun = new Mailgun(formData);
-  const client = mailgun.client({ username: 'api', key: API_KEY });
+    const mailgun = new Mailgun(formData);
+    const client = mailgun.client({ username: 'api', key: API_KEY });
 
-  const messageData = {
-    from: `QuizMe <admin@${DOMAIN}>`,
-    to: user.email,
-    subject: 'Please Activate Your QuizMe Account',
-    text: `Hello ${user.name}, please activate your account by clicking this link: http://localhost:3000/activate/${token.token}`,
-    html: `<html lang="en">
+    const messageData = {
+      from: `QuizMe <admin@${DOMAIN}>`,
+      to: user.email,
+      subject: 'Please Activate Your QuizMe Account',
+      text: `Hello ${user.name}, please activate your account by clicking this link: http://localhost:3000/activate/${token.token}`,
+      html: `<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -106,12 +107,18 @@ export async function POST(request: Request) {
         </div>
     </body>
     </html>`,
-  };
+    };
 
-  await client.messages
-    .create(DOMAIN, messageData)
-    .then((res) => console.log(res))
-    .catch((err) => console.log('Error ne: ', err));
+    try {
+      await client.messages.create(DOMAIN, messageData);
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return NextResponse.error();
+    }
 
-  return NextResponse.json(user);
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error('Error creating user:', error);
+    return NextResponse.error();
+  }
 }
