@@ -33,11 +33,11 @@ const DocUpload = () => {
 
         const quizId = data.id;
         router.push(`/quizzes/${quizId}`);
+        setIsLoading(false);
       }
     } catch (e) {
       console.log('error while generating the quiz', e);
     }
-    setIsLoading(false);
   };
 
   const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

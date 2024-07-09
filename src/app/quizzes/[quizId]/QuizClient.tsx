@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { AnswerBox } from '@/components/quiz/AnswerBox';
 import ProgressBar from '@/components/quiz/ProgressBar';
@@ -27,7 +27,7 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
   const [review, setReview] = useState<boolean>(false);
 
   // reset the states
-  const handleExit: any = () => {
+  const handleExit: any = useCallback(() => {
     setStarted(false);
     setCurrentQuestion(0);
     setScore(0);
@@ -35,15 +35,15 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
     setSelectedAnswer(null);
     setSubmitted(false);
     setReview(false);
-  };
+  }, [quiz.questions.length]);
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     if (currentQuestion > 0) {
       setCurrentQuestion((value) => value - 1);
     }
-  };
+  }, [currentQuestion]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     // if haven't started yet
     if (!started) {
       setStarted(true);
@@ -62,7 +62,7 @@ const QuizClient: React.FC<QuizClientProps> = ({ quiz }) => {
     }
 
     setSelectedAnswer(null);
-  };
+  }, [currentQuestion, handleExit, quiz.questions.length, review, started]);
 
   const scorePercentage = useMemo(() => {
     return Math.round((score / quiz.questions.length) * 100);

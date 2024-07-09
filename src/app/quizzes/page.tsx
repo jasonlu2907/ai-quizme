@@ -15,6 +15,13 @@ const QuizzesPage = async () => {
     );
 
   const quizzes = await getQuizzes({ userId: currentUser.id });
+  if (!quizzes || quizzes.length === 0)
+    return (
+      <EmptyState
+        title='No quizzes found in your profile.'
+        subtitle='Create your new quiz by clicking the button below!'
+      />
+    );
 
   return <QuizzesClient currentUser={currentUser} quizzes={quizzes} />;
 };

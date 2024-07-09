@@ -5,7 +5,6 @@ import { toast } from 'react-hot-toast';
 
 import { AiOutlineCloseSquare } from 'react-icons/ai';
 
-import EmptyState from '@/components/EmptyState';
 import {
   Card,
   CardContent,
@@ -13,23 +12,15 @@ import {
   CardTitle,
 } from '@/components/card/card';
 import { SafeQuiz, SafeUser } from '@/types';
+import { useCallback } from 'react';
 
 interface QuizzesClientProps {
   currentUser?: SafeUser | null;
-  quizzes?: SafeQuiz[];
+  quizzes: SafeQuiz[];
 }
 
 const QuizzesClient = ({ currentUser, quizzes }: QuizzesClientProps) => {
   const router = useRouter();
-
-  if (!quizzes || quizzes.length === 0) {
-    return (
-      <EmptyState
-        title='No quizzes found in your profile.'
-        subtitle='Create your new quiz by clicking the button below!'
-      />
-    );
-  }
 
   const formatDate = (date: Date) => {
     const day = String(date.getDate()).padStart(2, '0');
@@ -39,23 +30,26 @@ const QuizzesClient = ({ currentUser, quizzes }: QuizzesClientProps) => {
     return `${day}/${month}/${year}`;
   };
 
-  const handleDelete = async (quizId: string) => {
-    try {
-      const response = await fetch(`/api/quizzes/${quizId}`, {
-        method: 'DELETE',
-      });
+  const handleDelete = useCallback(
+    async (quizId: string) => {
+      try {
+        const response = await fetch(`/api/quizzes/${quizId}`, {
+          method: 'DELETE',
+        });
 
-      if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
 
-      const result = await response.json();
-      console.log('Deleted Quiz: ', result);
+        const result = await response.json();
+        console.log('Deleted Quiz: ', result);
 
-      router.refresh();
-      toast.success('Successfully removed!');
-    } catch (error) {
-      console.log('Error while deleting quiz! ', error);
-    }
-  };
+        router.refresh();
+        toast.success('Successfully removed!');
+      } catch (error) {
+        console.log('Error while deleting quiz! ', error);
+      }
+    },
+    [router]
+  );
 
   return (
     <main className='p-8 mx-auto max-w-7xl'>
