@@ -12,7 +12,8 @@ import {
   CardTitle,
 } from '@/components/card/card';
 import { SafeQuiz, SafeUser } from '@/types';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import LikeButton from '@/components/LikeButton';
 
 interface QuizzesClientProps {
   currentUser?: SafeUser | null;
@@ -55,7 +56,7 @@ const QuizzesClient = ({ currentUser, quizzes }: QuizzesClientProps) => {
     <main className='p-8 mx-auto max-w-7xl'>
       <div className='flex items-center'>
         <h2 className='mr-2 text-3xl font-bold tracking-tight'>
-          Your Quizzes:
+          Past Quizzes:
         </h2>
         {/* <DetailsDialog /> */}
       </div>
@@ -72,12 +73,18 @@ const QuizzesClient = ({ currentUser, quizzes }: QuizzesClientProps) => {
               >
                 {quiz.title}
               </CardTitle>
-              <AiOutlineCloseSquare
-                size={28}
-                className='hover:-translate-y-0.5 hover:cursor-pointer transition'
-                onClick={() => handleDelete(quiz.id)}
-              />
+
+              {/* Since LikeButton is within this div, you must have e.stopPropagation() to prevent an event from happening in this parent component, resulted in 'cannot destructure quizId from params' */}
+              <div className='flex flex-row gap-2'>
+                <LikeButton quizId={quiz.id} currentUser={currentUser} />
+                <AiOutlineCloseSquare
+                  size={28}
+                  className='hover:-translate-y-0.5 hover:cursor-pointer transition'
+                  onClick={() => handleDelete(quiz.id)}
+                />
+              </div>
             </CardHeader>
+
             <CardContent className='flex flex-row justify-between'>
               <div className=' text-sm text-muted-foreground'>
                 {quiz.description}
