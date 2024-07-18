@@ -34,12 +34,23 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   favoriteIds String[] @db.ObjectId
-  // active Boolean @default(false)
+  active Boolean @default(false)
 
   // Relations
   accounts Account[]
   quizzes Quiz[]
-    // activateTokens ActivateToken[]
+  activateTokens ActivateToken[]
+}
+
+model ActivateToken {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  token String
+  createdAt   DateTime  @default(now())
+  activatedAt DateTime?
+  userId String @db.ObjectId
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account { // for user login

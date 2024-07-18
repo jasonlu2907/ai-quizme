@@ -28,7 +28,7 @@ export const authOptions: AuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // 'credentials' are the user inputs
+        // 'credentials' are the user inputs when signing in
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Invalid Credentials');
         }
@@ -52,6 +52,12 @@ export const authOptions: AuthOptions = {
           throw new Error('Invalid Credentials');
         }
 
+        // After Signing up, they can't still sign in directly until after verifying their account
+        if (!user.active) {
+          // redirect('/error?error=UserNotActive');
+          throw new Error('UserNotActive');
+        }
+
         return user;
       },
     }),
@@ -67,9 +73,3 @@ export const authOptions: AuthOptions = {
 };
 
 export default NextAuth(authOptions);
-
-// After Signing up, they can't still sign in directly until after verifying their account
-// if (!user.active) {
-//   // redirect('/error?error=UserNotActive');
-//   throw new Error('UserNotActive');
-// }
