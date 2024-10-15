@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     // console.log('Selected Texts:', texts); // the questions?
 
     const prompt =
-      'given the text which is a summary of the document, generate a quiz based on the text. Return json only that contains a quiz object with fields: title, description and questions. The questions is an array of 3 objects with fields: questionText, answers. The answers is an array of 3 objects with fields: answerText, isCorrect. There should be only one answer whose isCorrect property is true';
+      'Given the topic of studying, generate a quiz based on the topic giving the questions and correct answers. Return json only that contains a quiz object with fields: title, description and questions. The questions is an array of length of the number of questions with fields: questionText, answers. The answers is an array of 3 objects with fields: answerText, isCorrect. There should be only one answer whose isCorrect property is true.';
 
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     const model = new ChatOpenAI({
       apiKey: process.env.OPENAI_API_KEY,
       modelName: 'gpt-3.5-turbo',
-      maxTokens: 500,
+      maxTokens: 1000,
     });
 
     const parser = new JsonOutputFunctionsParser();

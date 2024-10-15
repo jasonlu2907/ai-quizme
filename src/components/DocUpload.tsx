@@ -32,8 +32,10 @@ const DocUpload = () => {
         // console.log('Data: ', data);
 
         const quizId = data.id;
-        router.push(`/quizzes/${quizId}`);
+
+        // fixed bug: delaying the redirect
         setIsLoading(false);
+        router.replace(`/quizzes/${quizId}`, { scroll: false });
       }
     } catch (e) {
       console.log('error while generating the quiz', e);
